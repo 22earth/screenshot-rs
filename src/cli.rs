@@ -14,6 +14,14 @@ struct Args {
     // Capture the primary monitor (default if no params are specified).
     #[clap(short, long, conflicts_with = "window", conflicts_with = "monitor")]
     primary: bool,
+
+    #[clap(short, long)]
+    name: Option<String>,
+}
+
+pub fn get_name() -> Option<String> {
+    let args = Args::parse();
+    args.name
 }
 
 pub enum CaptureMode {

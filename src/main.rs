@@ -4,7 +4,8 @@ mod d3d;
 mod display_info;
 mod window_info;
 
-use cli::CaptureMode;
+use chrono::{DateTime, FixedOffset, Utc};
+use cli::{get_name, CaptureMode};
 use windows::core::{IInspectable, Interface, Result};
 use windows::Foundation::TypedEventHandler;
 use windows::Graphics::Capture::{Direct3D11CaptureFramePool, GraphicsCaptureItem};
@@ -163,8 +164,13 @@ fn take_screenshot(item: &GraphicsCaptureItem) -> Result<()> {
         .to_string_lossy()
         .to_string();
     let folder = StorageFolder::GetFolderFromPathAsync(path.as_str())?.get()?;
+    let now: DateTime<Utc> = Utc::now() + FixedOffset::east(8 * 3600);
+    let screenshot = match get_name() {
+        Some(name) => format!("{}_{}", name, now.format("%Y-%m-%d_%H%M%S.png")),
+        None => format!("{}", now.format("%Y-%m-%d_%H%M%S.png")),
+    };
     let file = folder
-        .CreateFileAsync("screenshot.png", CreationCollisionOption::ReplaceExisting)?
+        .CreateFileAsync(screenshot, CreationCollisionOption::ReplaceExisting)?
         .get()?;
 
     {

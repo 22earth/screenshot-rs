@@ -7,6 +7,7 @@ edition = "2021"
 
 [dependencies]
 clap = { version = "3.2.6", features = ["derive"] }
+chrono = "0.4.22"
 
 [dependencies.windows]
 version = "0.38.0"
@@ -34,3 +35,8 @@ features = [
     "Graphics_DirectX_Direct3D11",
     "Graphics_Imaging",
 ]
+
+[profile.release]
+lto = true
+strip = true
+opt-level = "z"
